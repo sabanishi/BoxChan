@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Block
+  - Box
   layers:
   - Default
   - TransparentFX
@@ -40,4 +42,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Block
+    uniqueID: 2331110389
+    locked: 0
+  - name: Player
+    uniqueID: 3074172995
+    locked: 0
+  - name: Effect
+    uniqueID: 94655145
     locked: 0
