@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Block
   - Box
+  - SoundManager
+  - Goal
   layers:
   - Default
   - TransparentFX
@@ -13,8 +15,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Curtain
+  - SelectNode
   - 
   - 
   - 
@@ -51,4 +53,7 @@ TagManager:
     locked: 0
   - name: Effect
     uniqueID: 94655145
+    locked: 0
+  - name: Curtain
+    uniqueID: 1102872303
     locked: 0

@@ -65,6 +65,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.instance.IsTimeStop) return;
         if (canOperate)
         {
             Move();
@@ -172,5 +173,31 @@ public class Player : MonoBehaviour
         _animator.SetBool("IsBox", isHang);
         _animator.SetFloat("ySpeed",rb.velocity.y);
         _animator.SetBool("IsAir", !_groundCheck.IsGround());
+    }
+
+    //任意のアニメーションを呼び出し
+    public void PlayAnimation(string animationName)
+    {
+        _animator.Play(animationName);
+    }
+
+    //ゲームオーバー時のアニメーション
+    public void DamageAnimation(bool isRight)
+    {
+        PlayAnimation("DamageAnimation");
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        Vector2 velocity = new Vector2();
+        if (isRight)
+        {
+            velocity.x = speed*1.5f;
+        }
+        else
+        {
+            velocity.x = -speed*1.5f;
+        }
+        velocity.y = jumpSpeed * 1.7f;
+        rb.velocity = velocity;
+        rb.gravityScale = 3.0f;
+        SetHangBoxSprite(null);
     }
 }

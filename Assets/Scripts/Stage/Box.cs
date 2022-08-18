@@ -26,16 +26,4 @@ public class Box : MonoBehaviour
             }
         }
     }
-    
-
-    void Start()
-    {
-       
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

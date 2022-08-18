@@ -7,7 +7,7 @@ public enum BlockEnum
     NotBox=3,
     PlainBox=4,
     DamageBox=5,
-    DeliveryBox=6,
+    DeliverBox=6,
     JumpBox=7,
     WarpBox=8,
 }

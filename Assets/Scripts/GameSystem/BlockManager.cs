@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class BlockManager : MonoBehaviour
 {
@@ -24,17 +25,29 @@ public class BlockManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     //初期化処理
     public void Initialize(BlockEnum[,] _stageBlockEnums,GameObject[,] _stageBlockObjects)
     {
+        DeleteBlock();
         stageBlockEnums = _stageBlockEnums;
         stageBlockObjects = _stageBlockObjects;
+    }
+
+    //破壊処理
+    private void DeleteBlock()
+    {
+        if (stageBlockEnums == null && stageBlockObjects == null) return;
+        for(int x = 0; x < stageBlockEnums.GetLength(0); x++)
+        {
+            for(int y = 0; y < stageBlockEnums.GetLength(1); y++)
+            {
+                stageBlockEnums[x, y] = BlockEnum.None;
+                if (stageBlockObjects[x, y] != null)
+                {
+                    Destroy(stageBlockObjects[x, y]);
+                }
+            }
+        }
     }
 
     //playerPosの位置でハコを置けるかどうか
@@ -58,6 +71,8 @@ public class BlockManager : MonoBehaviour
         {
             //目印の三角形を非表示にする
             instance._markForPutBox.SetActive(false);
+            //ゴールの三角形を非表示にする
+            GameManager.instance._goal.IsMoveTriangle = false;
             return false;
         }
 
@@ -66,21 +81,32 @@ public class BlockManager : MonoBehaviour
         {
             //目印の三角形を非表示にする
             instance._markForPutBox.SetActive(false);
+
+            //該当箇所がゴールで、配達バコを持っている時、ゴールの三角形を表示
+            if (instance.stageBlockEnums[x, y] == BlockEnum.Goal
+                &&GameManager.instance._player.HangBlockEnum.Equals(BlockEnum.DeliverBox))
+            {
+                GameManager.instance._goal.IsMoveTriangle = true;
+                return true;
+            }
             return false;
         }
 
         //該当箇所の真下に何も置かれていない時、falseを返す
-        if (y<=0 || instance.stageBlockEnums[x, y-1] == BlockEnum.None)
+        if (y<=0 || instance.stageBlockEnums[x, y-1] == BlockEnum.None||instance.stageBlockEnums[x,y-1]==BlockEnum.Goal)
         {
             //目印の三角形を非表示にする
             instance._markForPutBox.SetActive(false);
+            //ゴールの三角形を非表示にする
+            GameManager.instance._goal.IsMoveTriangle = false;
             return false;
         }
 
         //目印の三角形を表示する
         instance._markForPutBox.SetActive(true);
         instance._markForPutBox.transform.localPosition=new Vector3(x, y-0.225f, 0);
-
+        //ゴールの三角形を非表示にする
+        GameManager.instance._goal.IsMoveTriangle = false;
         return true;
     }
 
@@ -93,6 +119,23 @@ public class BlockManager : MonoBehaviour
         int y = (int)Math.Round(playerPos.y, MidpointRounding.AwayFromZero);
         if (isRight){ x++;}
         else{ x--;}
+
+        //ゴール
+        if (instance.stageBlockEnums[x, y] == BlockEnum.Goal&&player.HangBlockEnum.Equals(BlockEnum.DeliverBox))
+        {
+            //ゴールの三角形を非表示にする
+            GameManager.instance._goal.IsMoveTriangle = false;
+
+            //プレイヤーの状態の設定
+            player.IsHang = false;
+            player.HangBlockEnum = BlockEnum.None;
+            player.SetHangBoxSprite(null);
+            player.SetVelocity(new Vector2(0, player.GetVelocity().y));
+
+            //配達バコの提出
+            GameManager.instance.SubmitDeliverBox();
+            return;
+        }
 
         //ハコの作成
         Box box = StageGenerator.instance.CreateBlock(player.HangBlockEnum, x, y).GetComponent<Box>();
@@ -147,19 +190,15 @@ public class BlockManager : MonoBehaviour
             instance.stageBlockObjects[x, y - 1] = instance.stageBlockObjects[x, y];
             instance.stageBlockObjects[x, y] = null;
 
-            Hashtable moveHash = new Hashtable();
-            moveHash.Add("position", new Vector3(x, y-1, 0));
-            moveHash.Add("isLocal", true);
-            moveHash.Add("easetype", "easeInSine");
-            moveHash.Add("time", 0.2f);
             if (isFinishDeal)
             {
                 player.CanOperate = false;
-                moveHash.Add("oncomplete", "FinishFallAnimation");
-                moveHash.Add("oncompletetarget", instance.gameObject);
                 isFinishDeal = false;
+                instance.stageBlockObjects[x,y-1].transform.DOLocalMove(new Vector3(x, y-1, 0),0.2f)
+                .SetEase(Ease.InSine).OnComplete(instance.FinishFallAnimation);;
+            }else{
+                instance.stageBlockObjects[x,y-1].transform.DOLocalMove(new Vector3(x, y-1, 0),0.2f).SetEase(Ease.InSine);
             }
-            iTween.MoveTo(instance.stageBlockObjects[x,y-1],moveHash);
             y++;
         }
     }
@@ -168,5 +207,11 @@ public class BlockManager : MonoBehaviour
     public void FinishFallAnimation()
     {
         GameManager.instance._player.CanOperate = true;
+    }
+
+    //目印の三角形を非表示にする
+    public static void DissapearTriangle()
+    {
+        instance._markForPutBox.SetActive(false);
     }
 }

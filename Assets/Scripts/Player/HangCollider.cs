@@ -13,8 +13,9 @@ public class HangCollider : MonoBehaviour
             if (collisionBox != null)
             {
                 collisionBox.IsMoveTriangle = false;
+                collisionBox = null;
             }
-
+            
             Box thisCollisionBox= collision.GetComponent<Box>();
             if (thisCollisionBox.myBlockEnum.Equals(BlockEnum.DamageBox))
             {

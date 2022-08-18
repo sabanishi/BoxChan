@@ -8,7 +8,7 @@ public class DamageBox : Box
     {
         if (collision.gameObject.tag == "Player")
         {
-            //TODO:プレイヤーまたはGameManagerに死亡関数を実装して、それを呼び出す
+            GameManager.instance.GameOver(this);
         }
     }
 }
