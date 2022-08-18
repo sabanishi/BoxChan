@@ -20,8 +20,16 @@ public class StageGenerator : MonoBehaviour
     [SerializeField] private string DamageBoxName = "damageBox";
     [SerializeField] private DamageBox DamageBoxPrefab;
 
+    [SerializeField] private string DeliverBoxName = "deliverBox";
+    [SerializeField] private DeliverBox DeliverBoxPrefab;
+
+    [SerializeField] private string GoalName = "goal";
+    [SerializeField] private Goal GoalPrefab;
+
     private StartBlock _startBlock;
     private Transform _transform;
+    public Goal _goal { get; private set; }
+    public int deliveryboxNum { get; private set; }
 
     private void Start()
     {
@@ -90,6 +98,12 @@ public class StageGenerator : MonoBehaviour
                     }else if (tileBase.name == DamageBoxName)
                     {
                         blockEnums[x, y] = BlockEnum.DamageBox;
+                    }else if (tileBase.name == DeliverBoxName)
+                    {
+                        blockEnums[x, y] = BlockEnum.DeliverBox;
+                    }else if (tileBase.name == GoalName)
+                    {
+                        blockEnums[x, y] = BlockEnum.Goal;
                     }
                 }
             }
@@ -101,6 +115,7 @@ public class StageGenerator : MonoBehaviour
     public GameObject[,] CreateStage(BlockEnum[,] blockEnums)
     {
         GameObject[,] stageObjects = new GameObject[blockEnums.GetLength(0), blockEnums.GetLength(1)];
+        deliveryboxNum = 0;
         for(int x = 0; x < blockEnums.GetLength(0); x++)
         {
             for(int y = 0; y < blockEnums.GetLength(1); y++)
@@ -112,6 +127,11 @@ public class StageGenerator : MonoBehaviour
                     if (blockEnums[x, y] == BlockEnum.Start)
                     {
                         blockEnums[x, y] = BlockEnum.None;
+                    }
+                    //配達バコの数を数える
+                    if (blockEnums[x, y] == BlockEnum.DeliverBox)
+                    {
+                        deliveryboxNum++;
                     }
                 }
             }
@@ -142,6 +162,15 @@ public class StageGenerator : MonoBehaviour
                 DamageBox damageBox = Instantiate(DamageBoxPrefab, _transform);
                 damageBox.transform.position = pos;
                 return damageBox.gameObject;
+            case BlockEnum.DeliverBox:
+                DeliverBox deliverBox = Instantiate(DeliverBoxPrefab, _transform);
+                deliverBox.transform.position = pos;
+                return deliverBox.gameObject;
+            case BlockEnum.Goal:
+                Goal goal = Instantiate(GoalPrefab, _transform);
+                goal.transform.position = pos;
+                _goal = goal;
+                return goal.gameObject;
             default:
                 Debug.Log(blockEnum + "が無い");
                 break;

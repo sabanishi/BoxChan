@@ -4,7 +4,7 @@ using Cinemachine;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] private CinemachineVirtualCamera _Camera;
+    [SerializeField] public CinemachineVirtualCamera _Camera;
     [SerializeField] private CinemachineConfiner _CameraConfiner;
     [SerializeField] private float cameraDepth;
     [SerializeField] private PolygonCollider2D colliderPrefab;
