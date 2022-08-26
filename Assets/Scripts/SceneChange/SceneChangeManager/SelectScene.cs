@@ -6,24 +6,23 @@ public class SelectScene : SceneChangeAbstract
 {
     [SerializeField] private SelectManager selectManager;
 
-
-    public override void DiscardDeal()
+    public override void Initialize(string initialize_value)
     {
-        
+        selectManager.Initialize(initialize_value);
     }
 
-    public override void StopActionForFinishDeal()
+    public override void BeforeCloseCurtainDeal()
     {
         selectManager.IsValid = false;
-    }
-
-    public override void Initialize(int num)
-    {
-        selectManager.Initialize();
     }
 
     public override void AfterOpenCurtainDeal()
     {
         selectManager.AfterOpenCurtainDeal();
+    }
+
+    public override void Terminate()
+    {
+        selectManager.FinishDeal();
     }
 }

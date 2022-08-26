@@ -72,7 +72,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1963856907
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 5bc55933847b04940bac55269c47ccb0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8482488868296791765}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28f17081cbc414cc78f39056c00705ea, type: 3}
+  m_Script: {fileID: 11500000, guid: a8af829b31848475ba1be1d6b2adad94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Triangle: {fileID: 5798554266539433308}
@@ -184,6 +184,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9180619584761511776, guid: 3f43a2e00a7c3463495de0dd14ae4314, type: 3}
+      propertyPath: sprire
+      value: 
+      objectReference: {fileID: 4421594881108885545}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f43a2e00a7c3463495de0dd14ae4314, type: 3}
 --- !u!1 &5798554266539433308 stripped
@@ -194,5 +198,10 @@ GameObject:
 --- !u!4 &7863531714152411542 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3188918357520399143, guid: 3f43a2e00a7c3463495de0dd14ae4314, type: 3}
+  m_PrefabInstance: {fileID: 4711240439161359025}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &4421594881108885545 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8952339302436915864, guid: 3f43a2e00a7c3463495de0dd14ae4314, type: 3}
   m_PrefabInstance: {fileID: 4711240439161359025}
   m_PrefabAsset: {fileID: 0}

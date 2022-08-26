@@ -8,7 +8,7 @@ public class SubmitString : MonoBehaviour
 
     public void Initialize()
     {
-        transform.localScale = new Vector3(0.5f, 1, 1);
+        transform.localScale = new Vector3(0.5f, 1.3f, 1);
         gameObject.SetActive(true);
         DeliverBoxSprite.SetActive(false);
     }

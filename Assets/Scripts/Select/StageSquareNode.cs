@@ -79,5 +79,7 @@ public class StageSquareNode : MonoBehaviour
     {
         if (!parent.IsValidStageNum()) return;
         parent.ClickNumber(StageNumber);
+        squareSprite.sprite = normallySprite;
+        _transform.localScale = new Vector3(1, 1, 1);
     }
 }

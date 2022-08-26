@@ -7,6 +7,7 @@ using UnityEngine.Tilemaps;
 public class StageGenerator : MonoBehaviour
 {
     public static StageGenerator instance;
+    private Transform _transform;
 
     [SerializeField]private string NotBoxName = "notBox";
     [SerializeField]private Block NotBoxBlockPrefab;
@@ -23,13 +24,21 @@ public class StageGenerator : MonoBehaviour
     [SerializeField] private string DeliverBoxName = "deliverBox";
     [SerializeField] private DeliverBox DeliverBoxPrefab;
 
+    [SerializeField] private string JumpBoxName = "jumpBox";
+    [SerializeField] private JumpBox JumpBoxPrefab;
+
     [SerializeField] private string GoalName = "goal";
     [SerializeField] private Goal GoalPrefab;
 
-    private StartBlock _startBlock;
-    private Transform _transform;
-    public Goal _goal { get; private set; }
-    public int deliveryboxNum { get; private set; }
+    [SerializeField] private string WarpName1 = "warpBox1";
+    [SerializeField] private string WarpName2 = "warpBox2";
+    [SerializeField] private string WarpName3 = "warpBox3";
+    [SerializeField] private string WarpName4 = "warpBox4";
+    [SerializeField] private WarpBox WarpBoxprefab;
+
+    private StartBlock _startBlock;//プレイヤーの開始場所
+    public Goal _goal { get; private set; }//ゴール
+    public int deliveryboxNum { get; private set; }//配達バコの総数(初期配置)
 
     private void Start()
     {
@@ -44,8 +53,8 @@ public class StageGenerator : MonoBehaviour
         }
     }
 
-    //初期化
-    public Player Initialize()
+    //プレイヤーの作成
+    public Player CreatePlayer()
     {
         Player player = null;
         //プレイヤーの作成
@@ -104,6 +113,24 @@ public class StageGenerator : MonoBehaviour
                     }else if (tileBase.name == GoalName)
                     {
                         blockEnums[x, y] = BlockEnum.Goal;
+                    }else if (tileBase.name == JumpBoxName)
+                    {
+                        blockEnums[x, y] = BlockEnum.JumpBox;
+                    }else if (tileBase.name == WarpName1)
+                    {
+                        blockEnums[x, y] = BlockEnum.WarpBox1;
+                    }
+                    else if (tileBase.name == WarpName2)
+                    {
+                        blockEnums[x, y] = BlockEnum.WarpBox2;
+                    }
+                    else if (tileBase.name == WarpName3)
+                    {
+                        blockEnums[x, y] = BlockEnum.WarpBox3;
+                    }
+                    else if (tileBase.name == WarpName4)
+                    {
+                        blockEnums[x, y] = BlockEnum.WarpBox4;
                     }
                 }
             }
@@ -116,6 +143,7 @@ public class StageGenerator : MonoBehaviour
     {
         GameObject[,] stageObjects = new GameObject[blockEnums.GetLength(0), blockEnums.GetLength(1)];
         deliveryboxNum = 0;
+        WarpBox[] warpBoxs = new WarpBox[4];
         for(int x = 0; x < blockEnums.GetLength(0); x++)
         {
             for(int y = 0; y < blockEnums.GetLength(1); y++)
@@ -133,10 +161,70 @@ public class StageGenerator : MonoBehaviour
                     {
                         deliveryboxNum++;
                     }
+
+                    //ワープボックスの相方の設定
+                    SetWarpBoxPair(blockEnums[x, y], stageObjects[x, y], warpBoxs);
                 }
             }
         }
         return stageObjects;
+    }
+
+    //ワープボックスの設定
+    private void SetWarpBoxPair(BlockEnum blockEnum,GameObject warpObject,WarpBox[] warpBoxs)
+    {
+        WarpBox warp;
+        //ワープボックスの相方の設定
+        if (blockEnum == BlockEnum.WarpBox1)
+        {
+            warp = warpObject.GetComponent<WarpBox>();
+            if (warpBoxs[0] == null)
+            {
+                warpBoxs[0] = warp;
+            }
+            else
+            {
+                warpBoxs[0].SetPair(warp);
+                warp.SetPair(warpBoxs[0]);
+            }
+        }
+        else if (blockEnum == BlockEnum.WarpBox2)
+        {
+            warp = warpObject.GetComponent<WarpBox>();
+            if (warpBoxs[1] == null)
+            {
+                warpBoxs[1] = warp;
+            }
+            else
+            {
+                warpBoxs[1].SetPair(warp);
+                warp.SetPair(warpBoxs[1]);
+            }
+        }else if (blockEnum == BlockEnum.WarpBox3)
+        {
+            warp = warpObject.GetComponent<WarpBox>();
+            if (warpBoxs[2] == null)
+            {
+                warpBoxs[2] = warp;
+            }
+            else
+            {
+                warpBoxs[2].SetPair(warp);
+                warp.SetPair(warpBoxs[2]);
+            }
+        }else if (blockEnum == BlockEnum.WarpBox4)
+        {
+            warp = warpObject.GetComponent<WarpBox>();
+            if (warpBoxs[3] == null)
+            {
+                warpBoxs[3] = warp;
+            }
+            else
+            {
+                warpBoxs[3].SetPair(warp);
+                warp.SetPair(warpBoxs[3]);
+            }
+        }
     }
 
     //BlockEnumを基にブロックを作成
@@ -171,6 +259,30 @@ public class StageGenerator : MonoBehaviour
                 goal.transform.position = pos;
                 _goal = goal;
                 return goal.gameObject;
+            case BlockEnum.JumpBox:
+                JumpBox jumpBox = Instantiate(JumpBoxPrefab, _transform);
+                jumpBox.transform.position = pos;
+                return jumpBox.gameObject;
+            case BlockEnum.WarpBox1:
+                WarpBox warpBox1 = Instantiate(WarpBoxprefab, _transform);
+                warpBox1.transform.position = pos;
+                warpBox1.SetNumber(1);
+                return warpBox1.gameObject;
+            case BlockEnum.WarpBox2:
+                WarpBox warpBox2 = Instantiate(WarpBoxprefab, _transform);
+                warpBox2.transform.position = pos;
+                warpBox2.SetNumber(2);
+                return warpBox2.gameObject;
+            case BlockEnum.WarpBox3:
+                WarpBox warpBox3 = Instantiate(WarpBoxprefab, _transform);
+                warpBox3.transform.position = pos;
+                warpBox3.SetNumber(3);
+                return warpBox3.gameObject;
+            case BlockEnum.WarpBox4:
+                WarpBox warpBox4 = Instantiate(WarpBoxprefab, _transform);
+                warpBox4.transform.position = pos;
+                warpBox4.SetNumber(4);
+                return warpBox4.gameObject;
             default:
                 Debug.Log(blockEnum + "が無い");
                 break;

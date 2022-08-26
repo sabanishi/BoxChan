@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2215112153854925436}
   - component: {fileID: 2215112153854925439}
   - component: {fileID: 2215112153854925410}
+  - component: {fileID: 4324679351625548956}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -76,7 +77,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1220794301
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: eb4dc207b2331412fab702927dd897e8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -160,11 +161,43 @@ MonoBehaviour:
   rb: {fileID: 2215112153854925436}
   speed: 3
   jumpSpeed: 5.5
+  highJumpSpeed: 11
   _animator: {fileID: 2215112153854925438}
   _transform: {fileID: 2215112153854925411}
   _groundCheck: {fileID: 2215112155072417528}
   _hangCollider: {fileID: 4659950483025177285}
   _hangBoxSprite: {fileID: 2215112155004617975}
+  _sprite: {fileID: 2215112153854925437}
+  WaitSprite: {fileID: 21300000, guid: eb4dc207b2331412fab702927dd897e8, type: 3}
+  JumpSprite1: {fileID: 21300000, guid: c22230c73a0b14a119ec4500ddcb5bb5, type: 3}
+  JumpSprite2: {fileID: 21300000, guid: 946994217d38a46baa3d9182a32045f5, type: 3}
+--- !u!68 &4324679351625548956
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2215112153854925408}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: 0.05, y: -0.5}
+  - {x: -0.08, y: -0.5}
+  - {x: -0.15, y: -0.45}
+  - {x: -0.15, y: 0.24}
+  - {x: 0.12, y: 0.24}
+  - {x: 0.12, y: -0.45}
+  - {x: 0.05, y: -0.5}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1 &2215112155004617973
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +267,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1220794301
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
@@ -260,7 +293,7 @@ GameObject:
   - component: {fileID: 2215112155072417528}
   m_Layer: 0
   m_Name: GroundCheck
-  m_TagString: Untagged
+  m_TagString: PlayerGroundCheck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -364,7 +397,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.03162846, y: -0.005581498}
+  m_Offset: {x: 0.020465448, y: -0.02086069}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -375,7 +408,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.36325693, y: 0.38558292}
+  m_Size: {x: 0.3409309, y: 0.1317648}
   m_EdgeRadius: 0
 --- !u!114 &4659950483025177285
 MonoBehaviour:
@@ -389,6 +422,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf4e8295e9c0d4b92a0de50c70e4203d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groundCheck: {fileID: 2215112155072417528}
+  player: {fileID: 2215112153854925410}
 --- !u!50 &4250327369393655287
 Rigidbody2D:
   serializedVersion: 4

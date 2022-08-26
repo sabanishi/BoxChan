@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//ゲームシーンにおいて、端からプレイヤーが落ちないようにするためのCollider
 public class BoarderColliderObjects : MonoBehaviour
 {
     [SerializeField] private BoxCollider2D up;
@@ -15,7 +16,7 @@ public class BoarderColliderObjects : MonoBehaviour
         up.offset = new Vector2(width / 2 - 0.5f, height);
 
         down.size = new Vector2(width, 1);
-        down.offset = new Vector2(width / 2 - 0.5f,-1);
+        down.offset = new Vector2(width / 2 - 0.5f,-5);
 
         right.size = new Vector2(1, height);
         right.offset = new Vector2(-1, height / 2 - 0.5f);

@@ -15,11 +15,11 @@ public abstract class AbstractManager : MonoBehaviour
     {
         if (isValid)
         {
-            target.transform.DOLocalMove(pos, 0.5f).SetDelay(delay).OnComplete(target.SetIsValidTrue);
+            target.transform.DOLocalMove(pos, 0.5f).SetDelay(delay).OnComplete(target.SetIsValidTrue).SetLink(target.gameObject);
         }
         else
         {
-            target.transform.DOLocalMove(pos, 0.5f).SetDelay(delay);
+            target.transform.DOLocalMove(pos, 0.5f).SetDelay(delay).SetLink(target.gameObject);
             target.SetIsvalidFalse();
         }
 
