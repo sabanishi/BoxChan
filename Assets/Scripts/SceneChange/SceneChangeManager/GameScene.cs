@@ -5,23 +5,24 @@ using UnityEngine;
 public class GameScene : SceneChangeAbstract
 {
     [SerializeField] private GameManager gameManager;
-    public override void StopActionForFinishDeal()
+
+    public override void Initialize(string initialize_value)
     {
-
-    }
-
-    public override void DiscardDeal()
-    {
-
-    }
-
-    public override void Initialize(int num)
-    {
-        gameManager.Initialize(num);
+        gameManager.Initialize(initialize_value);
     }
 
     public override void AfterOpenCurtainDeal()
     {
-        gameManager.IsTimeStop = false;
+        gameManager.CanAcceptInput = true;
+    }
+
+    public override void BeforeCloseCurtainDeal()
+    {
+
+    }
+
+    public override void Terminate()
+    {
+        gameManager.Terminate();
     }
 }

@@ -4,25 +4,37 @@ using UnityEngine;
 
 public class HangCollider : MonoBehaviour
 {
-    public Box collisionBox { private set; get; }
-    public bool isHang { get; set; }
+    [SerializeField] private GroundCheck groundCheck;
+    [SerializeField] private Player player;
+    public Box collisionBox { private set; get; }//触れているハコ
+    public bool isHang { get; set; }//ハコを持っているかどうか
+    private Box thisCollisionBox;//今接触しているハコ
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!isHang&&collision.tag == "Box")
+        if (!player.CanOperate) return;
+        if (!isHang && collision.tag == "Box")
         {
-            if (collisionBox != null)
+            thisCollisionBox = collision.GetComponent<Box>();
+            if (groundCheck.IsGround())
             {
-                collisionBox.IsMoveTriangle = false;
-                collisionBox = null;
+                EnterDeal();
             }
-            
-            Box thisCollisionBox= collision.GetComponent<Box>();
-            if (thisCollisionBox.myBlockEnum.Equals(BlockEnum.DamageBox))
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (!player.CanOperate) return;
+        if (!isHang && collision.tag == "Box")
+        {
+            if (groundCheck.IsGround())
             {
-                return;
+                if (collisionBox == null)
+                {
+                    EnterDeal();
+                }
             }
-            collisionBox = thisCollisionBox;
-            collisionBox.IsMoveTriangle = true;
         }
     }
 
@@ -44,5 +56,21 @@ public class HangCollider : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void EnterDeal()
+    {
+        if (collisionBox != null)
+        {
+            collisionBox.IsMoveTriangle = false;
+            collisionBox = null;
+        }
+
+        if (thisCollisionBox.myBlockEnum.Equals(BlockEnum.DamageBox))
+        {
+            return;
+        }
+        collisionBox = thisCollisionBox;
+        collisionBox.IsMoveTriangle = true;
     }
 }

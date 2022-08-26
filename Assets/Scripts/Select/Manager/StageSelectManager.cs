@@ -12,8 +12,7 @@ public class StageSelectManager : AbstractManager
 
     [SerializeField] private Text DayText;
     [SerializeField] private Text TimeText;
-    [SerializeField] private Text RankText;
-    [SerializeField] private Text WorlRecordText;
+
     private int nowShowInfoNum;
 
     private bool isValidStageNum;
@@ -24,6 +23,7 @@ public class StageSelectManager : AbstractManager
 
     private bool isMove;
 
+    //クリック時の処理
     public override void ClickDeal(string nodeName)
     {
         if (nodeName == "GoBackNode")
@@ -32,14 +32,16 @@ public class StageSelectManager : AbstractManager
         }
     }
 
+    //初期化処理
     public override void Reset()
     {
         CardObj.transform.position = new Vector3(-13, -0.05f, 0);
-        CardObj.transform.localScale = new Vector3(0.33f, 0.33f, 1);
+        CardObj.transform.localScale = new Vector3(0.3f, 0.3f, 1);
         GoBack.transform.position = new Vector3(11, -3.65f, 0);
         InfoBack.SetActive(false);
     }
 
+    //ロビー画面から遷移してくる時の処理
     public void Initialize_FromLobby()
     {
         isValidStageNum = false;
@@ -56,9 +58,24 @@ public class StageSelectManager : AbstractManager
         parent.getStageNumbers().transform.localScale = new Vector3(1, 1, 1);
     }
 
+    //ゲーム画面から遷移してくる時の処理
     public void Initialize_FromGame()
     {
-        
+        CardObj.transform.localPosition = new Vector3(-1.105f, 0.05f, 0);
+        CardObj.transform.localScale = new Vector3(0.45f, 0.45f, 1);
+        parent.getStageNumbers().transform.parent = CardObj.transform;
+        parent.getStageNumbers().transform.localPosition = new Vector3(-11.5f, 2.05f, 0);
+        parent.getStageNumbers().transform.localScale = new Vector3(1, 1, 1);
+        GoBack.transform.localPosition= new Vector3(6.62f, -3.65f, 0);
+        isValidStageNum = true;
+    }
+
+    //ロビー画面へと遷移する時の処理
+    public void Finish_ToLobby()
+    {
+        isValidStageNum = false;
+        FinishMoveCard();
+        SetMoveObj(GoBack, new Vector3(11, -3.65f, 0), 0, false);
     }
 
     private void InitilizeMoveCard()
@@ -70,6 +87,14 @@ public class StageSelectManager : AbstractManager
         sequence.Play();
     }
 
+    private void FinishMoveCard()
+    {
+        var sequence = DOTween.Sequence();
+        sequence.Append(CardObj.transform.DOLocalMove(new Vector3(-3.22f, -0.99f, 0), 0.2f).SetDelay(0.2f).OnComplete(DissapearCard));
+        sequence.Join(CardObj.transform.DOScale(new Vector3(0.3f, 0.3f, 1), 0.2f));
+        sequence.Play();
+    }
+
     //ステージ番号の表示
     private void AppearNode()
     {
@@ -77,25 +102,10 @@ public class StageSelectManager : AbstractManager
         isMove = false;
     }
 
-    public void Finish_ToLobby()
-    {
-        isValidStageNum = false;
-        FinishMoveCard();
-        SetMoveObj(GoBack, new Vector3(11, -3.65f, 0), 0,false);
-    }
-
-    private void FinishMoveCard()
-    {
-        var sequence =DOTween.Sequence();
-        sequence.Append(CardObj.transform.DOLocalMove(new Vector3(-3.22f,-0.99f, 0),0.2f).SetDelay(0.2f).OnComplete(DissapearCard));
-        sequence.Join(CardObj.transform.DOScale(new Vector3(0.3f,0.3f,1),0.2f));
-        sequence.Play();
-    }
-
     public void DissapearCard()
     {
-        DissapearStageInfo();
-        Invoke("SetCardFalse", 0.2f);
+        Dissapear();
+        Invoke("SetCardFalse", 0.1f);
     }
 
     private void SetCardFalse()
@@ -106,16 +116,25 @@ public class StageSelectManager : AbstractManager
 
     public void ClickNumber(int num)
     {
-        SceneChangeManager.GoGame(num);
+        isValidStageNum = false;
+        SceneChangeManager.GoGame(SaveData.STAGE_NAME_FOR_NORMAL_PUZZLE[num]);
     }
 
     //ステージ情報の表示
     public void DisplayStageInfo(int num)
     {
         DayText.text = "Day" + num;
-        TimeText.text = "100:45:20";
-        RankText.text = "32 位";
-        WorlRecordText.text = "90:64:21";
+        float timeNum = SaveData.GetStageDataFromStagename(SaveData.STAGE_NAME_FOR_NORMAL_PUZZLE[num]);
+        //未クリア
+        if (timeNum == -1)
+        {
+            TimeText.text = "未クリア";
+        }
+        else
+        {
+            TimeText.text = Util.ConvertTimeFormat(timeNum);
+        }
+        
         nowShowInfoNum = num;
         InfoBack.SetActive(true);
     }
@@ -125,18 +144,16 @@ public class StageSelectManager : AbstractManager
     {
         if (num == nowShowInfoNum)
         {
-            DissapearStageInfo();
+            Dissapear();
             InfoBack.SetActive(false);
         }
     }
 
     //ステージ情報を消す
-    private void DissapearStageInfo()
+    public void Dissapear()
     {
         DayText.text = "";
         TimeText.text = "";
-        RankText.text = "";
-        WorlRecordText.text = "";
         nowShowInfoNum = 0;
     }
 }

@@ -8,6 +8,7 @@ TagManager:
   - Box
   - SoundManager
   - Goal
+  - PlayerGroundCheck
   layers:
   - Default
   - TransparentFX
@@ -45,6 +46,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: WarpPlayer
+    uniqueID: 2076314437
+    locked: 0
   - name: Block
     uniqueID: 2331110389
     locked: 0
@@ -56,4 +60,7 @@ TagManager:
     locked: 0
   - name: Curtain
     uniqueID: 1102872303
+    locked: 0
+  - name: UI
+    uniqueID: 109930757
     locked: 0

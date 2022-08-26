@@ -1,4 +1,4 @@
 ﻿public enum SelectEnum
 {
-    None,Lobby,StageSelect
+    None,Lobby,StageSelect,ExtraStageSelect
 }

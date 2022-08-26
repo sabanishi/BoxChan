@@ -9,5 +9,8 @@ public enum BlockEnum
     DamageBox=5,
     DeliverBox=6,
     JumpBox=7,
-    WarpBox=8,
+    WarpBox1=8,
+    WarpBox2 = 9,
+    WarpBox3 = 10,
+    WarpBox4 = 11,
 }

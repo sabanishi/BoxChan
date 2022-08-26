@@ -6,7 +6,9 @@ public class SelectManager : MonoBehaviour
 {
     [SerializeField] private LobbyManager lobby;
     [SerializeField] private StageSelectManager stageSelect;
+    [SerializeField] private ExtraStageSelectManager extraStageSelect;
     [SerializeField] private GameObject stageNumbers;
+    [SerializeField] private StageSquareNode[] stageSquares;
     private bool isValid;
     public bool IsValid
     {
@@ -19,15 +21,27 @@ public class SelectManager : MonoBehaviour
         return stageNumbers;
     }
 
-    private SelectEnum nowState;
+    //遊べるステージの最大値
+    private int canPlayStageMaxNum;
 
     //初期化
-    public void Initialize()
+    public void Initialize(string initialize_value)
     {
         stageSelect.Reset();
         lobby.Reset();
+        extraStageSelect.Reset();
 
-        SetState(SelectEnum.None, SelectEnum.Lobby);
+        if (initialize_value.Equals("Title"))
+        {
+            //fromタイトル
+            SetState(SelectEnum.None, SelectEnum.Lobby);
+        }
+        else if (initialize_value.Equals("Game"))
+        {
+            //fromゲーム
+            SetState(SelectEnum.None, SelectEnum.StageSelect);
+        }
+        SetCanPlayStage();
     }
 
     //暗転解除後の処理
@@ -37,30 +51,89 @@ public class SelectManager : MonoBehaviour
         isValid = true;
     }
 
+    //終わり時の処理
+    public void FinishDeal()
+    {
+        stageSelect.Dissapear();
+    }
+
     //状態の変化
     public void SetState(SelectEnum from,SelectEnum to)
     {
         if (from.Equals(SelectEnum.None))
         {
-            //タイトル画面からLobbyへ
-            nowState = SelectEnum.Lobby;
-            lobby.Initialize_FromTitle();
+            if (to.Equals(SelectEnum.Lobby))
+            {
+                //タイトル画面からLobbyへ
+                lobby.Initialize_FromTitle();
+            }
+            else if(to.Equals(SelectEnum.StageSelect))
+            {
+                //ゲーム画面からStageSelectへ
+                stageSelect.Initialize_FromGame();
+            }
         }
-
-        if (to.Equals(SelectEnum.StageSelect))
+        else if (from.Equals(SelectEnum.Lobby))
         {
-            //lobbyからstageSelectへ
-            nowState = SelectEnum.StageSelect;
-            lobby.Finish_ToStageSelect();
-            stageSelect.Initialize_FromLobby();
+            if (to.Equals(SelectEnum.StageSelect))
+            {
+                //lobbyからstageSelectへ
+                lobby.Finish_ToStageSelect();
+                stageSelect.Initialize_FromLobby();
+            }
+            else if (to.Equals(SelectEnum.ExtraStageSelect))
+            {
+                //lobbyからextraSelectへ
+                lobby.Finish_ToExtraStageSelect();
+                extraStageSelect.Initialize_FromLobby();
+            }
+
         }
-
-        if (from.Equals(SelectEnum.StageSelect) && to.Equals(SelectEnum.Lobby))
+        else if(from.Equals(SelectEnum.StageSelect))
         {
-            //stageSelectからlobbyへ
-            nowState = SelectEnum.Lobby;
-            stageSelect.Finish_ToLobby();
-            lobby.Initialize_FromStageSelect();
+            if (to.Equals(SelectEnum.Lobby))
+            {
+                //stageSelectからlobbyへ
+                stageSelect.Finish_ToLobby();
+                lobby.Initialize_FromStageSelect();
+            }
+        }
+        else if (from.Equals(SelectEnum.ExtraStageSelect))
+        {
+            if (to.Equals(SelectEnum.Lobby))
+            {
+                //extraSelectからlobbyへ
+                extraStageSelect.Finish_ToLobby();
+                lobby.Initialize_FromExtraStageSelect();
+            }
+        }
+    }
+
+    //遊べるステージの決定
+    private void SetCanPlayStage()
+    {
+        for(int i = 0; i < stageSquares.Length; i++)
+        {
+            stageSquares[i].gameObject.SetActive(false);
+        }
+        for(int stageNum=1;stageNum<= SaveData.FINAL_STAGE_NUM;stageNum++)
+        {
+            if (SaveData.GetStageDataFromStagename(SaveData.STAGE_NAME_FOR_NORMAL_PUZZLE[stageNum]) != -1)
+            {
+                //遊べる
+                stageSquares[stageNum - 1].gameObject.SetActive(true);
+                //最後まで調べたら終わる
+                if (stageNum == SaveData.FINAL_STAGE_NUM)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                //このステージは遊べるが、それ以降は遊べない
+                stageSquares[stageNum - 1].gameObject.SetActive(true);
+                return;
+            }
         }
     }
 }

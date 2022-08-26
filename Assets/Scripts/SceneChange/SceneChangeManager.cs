@@ -22,7 +22,6 @@ public class SceneChangeManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        //TODO:タイトル画面の呼び出し
         GoTitle(SceneEnum.None);
     }
 
@@ -32,11 +31,11 @@ public class SceneChangeManager : MonoBehaviour
 
         if (from == SceneEnum.Select)
         {
-            instance.StartCoroutine(instance.GoStageEnumerator(instance.seletScene, instance.titleScene, 0));
+            instance.StartCoroutine(instance.GoStageCoroutine(instance.seletScene, instance.titleScene,""));
         }
         else
         {
-            instance.StartCoroutine(instance.GoStageEnumerator(null, instance.titleScene, 0));
+            instance.StartCoroutine(instance.GoStageCoroutine(null, instance.titleScene,""));
         }
     }
 
@@ -46,10 +45,10 @@ public class SceneChangeManager : MonoBehaviour
 
         if (fromScene.Equals(SceneEnum.Title))
         {
-            instance.StartCoroutine(instance.GoStageEnumerator(instance.titleScene, instance.seletScene, 0));
+            instance.StartCoroutine(instance.GoStageCoroutine(instance.titleScene, instance.seletScene,"Title"));
         }else if (fromScene.Equals(SceneEnum.Game))
         {
-            instance.StartCoroutine(instance.GoStageEnumerator(instance.gameScene, instance.seletScene, 0));
+            instance.StartCoroutine(instance.GoStageCoroutine(instance.gameScene, instance.seletScene,"Game"));
         }
         else
         {
@@ -57,37 +56,37 @@ public class SceneChangeManager : MonoBehaviour
         }
     }
 
-    public static void GoGame(int stageNum)
+    public static void GoGame(string stageName)
     {
         if (instance.isChangeing) return;
 
-        instance.StartCoroutine(instance.GoStageEnumerator(instance.seletScene, instance.gameScene,stageNum));
+        instance.StartCoroutine(instance.GoStageCoroutine(instance.seletScene, instance.gameScene,stageName));
     }
 
-    private IEnumerator GoStageEnumerator(SceneChangeAbstract from,SceneChangeAbstract to,int num)
+    private IEnumerator GoStageCoroutine(SceneChangeAbstract from,SceneChangeAbstract to,string initialize_value)
     {
         isChangeing = true;
         //入力受け付け停止
         if (from != null)
         {
-            from.StopActionForFinishDeal();
+            from.BeforeCloseCurtainDeal();
             //暗転
-            yield return StartCoroutine(CloseCurtain());
+            yield return StartCoroutine(CloseCurtainCoroutine());
         }
 
         //場面転換
         if (from != null)
         {
-            from.DiscardDeal();
+            from.Terminate();
             from.gameObject.SetActive(false);
         }
         to.gameObject.SetActive(true);
-        to.Initialize(num);
+        to.Initialize(initialize_value);
 
         if (from != null)
         {
             //暗転解除
-            yield return StartCoroutine(OpenCurtain());
+            yield return StartCoroutine(OpenCurtainCoroutine());
         }
         to.AfterOpenCurtainDeal();
 
@@ -96,14 +95,14 @@ public class SceneChangeManager : MonoBehaviour
 
 
     //荷物の山を上から降らせる
-    public static IEnumerator CloseCurtain()
+    public static IEnumerator CloseCurtainCoroutine()
     {
-        yield return instance._curtainManager.StartCoroutine(instance._curtainManager.AppearLetter());
+        yield return instance._curtainManager.StartCoroutine(instance._curtainManager.AppearLetterCoroutine());
     }
 
     //荷物の山を下に落とす
-    public static IEnumerator OpenCurtain()
+    public static IEnumerator OpenCurtainCoroutine()
     {
-        yield return instance._curtainManager.StartCoroutine(instance._curtainManager.DisappearLetter());
+        yield return instance._curtainManager.StartCoroutine(instance._curtainManager.DisappearLetterCoroutine());
     }
 }

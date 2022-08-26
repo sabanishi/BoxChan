@@ -6,6 +6,7 @@ public class Triangle : MonoBehaviour
 {
     private float time = 0;//三角形を回すためのカウンター
     private Transform _transform;
+    [SerializeField] private SpriteRenderer sprire;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,11 +16,19 @@ public class Triangle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        time += (Time.deltaTime * 4);
-        _transform.rotation = Quaternion.Euler(0, 90 * Mathf.Sin(time), 0);
-        if (time > Mathf.PI)
+        if (GameManager.instance.IsPause)
         {
-            time -= Mathf.PI;
+            sprire.enabled = false;
+        }
+        else
+        {
+            sprire.enabled = true;
+            time += (Time.deltaTime * 4);
+            _transform.rotation = Quaternion.Euler(0, 90 * Mathf.Sin(time), 0);
+            if (time > Mathf.PI)
+            {
+                time -= Mathf.PI;
+            }
         }
     }
 }
