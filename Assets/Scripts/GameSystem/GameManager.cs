@@ -41,6 +41,10 @@ public class GameManager : MonoBehaviour
     private bool isGoBackFlag;//セレクト画面に戻れる状態に入ったかどうか
     private Sequence newSequence;//Newの文字用のDOTweenのSequence
     private bool isPause;//ポーズを管理するフラグ
+    private bool isCreateStage;//CreateStage画面で作成したステージのチェックの場合
+    private bool isExtraStage;//エクストラパズルの場合
+    private BlockEnum[,] initializeBlockEnums;//タイルマップからステージを作らない場合、これからステージを作る
+    private Tweener stringTweener;//配達バコを続けて配達した時、最初のアニメーションを停止するために必要
 
     public bool CanAcceptInput
     {
@@ -97,6 +101,7 @@ public class GameManager : MonoBehaviour
             {
                 if (Input.GetButtonDown("Pause")&&canAcceptInput)
                 {
+                    SoundManager.PlaySE(SE_Enum.MENU);
                     IsPause = true;
                     _pauseManager.StartCoroutine(_pauseManager.PauseStartCoroutine());
                 }
@@ -106,8 +111,23 @@ public class GameManager : MonoBehaviour
         //クリア後にステージセレクト画面に戻る
         if (isGoBackFlag&&Input.GetButtonDown("Hang"))
         {
-            SaveClearTime();//セーブ
-            SceneChangeManager.GoSelect(SceneEnum.Game);//ステージセレクト画面の戻る
+            SoundManager.PlaySE(SE_Enum.DECIDE1);
+            if (isExtraStage)
+            {
+                //エクストラパズルの場合
+                SaveClearTime();
+                SceneChangeManager.GoExtraStageSelect(SceneEnum.Game);
+            }else if(isCreateStage)
+            {
+                //CreateStage画面のチェックの場合
+                SceneChangeManager.GoCreateStage(SceneEnum.Game, true);
+            }
+            else
+            {
+                //普通のパズルの場合
+                SaveClearTime();//セーブ
+                SceneChangeManager.GoSelect(SceneEnum.Game);
+            }
         }
     }
 
@@ -125,9 +145,27 @@ public class GameManager : MonoBehaviour
     //初期化処理
     public void Initialize(string initialize_value)
     {
+        isExtraStage = false;
+        isCreateStage = false;
         StageSceneName = initialize_value;//ステージ名の受け渡し
         stageTileMap = mapStack.GetTileMap(initialize_value);//ステージのタイルマップを決定、代入する
-        //TODO:エクストラパズルの場合の処理
+        //CreateStageSceneからきた場合
+        if (initialize_value.Equals("CreateStage"))
+        {
+            initializeBlockEnums = InformationDeliveryUnit.Instance.BlockEnums;
+            isCreateStage = true;
+        }
+        else
+        {
+            if (object.Equals(stageTileMap, null))
+            {
+                //エクストラパズルを遊ぶ時の処理
+                initializeBlockEnums = InformationDeliveryUnit.Instance.BlockEnums;
+                isExtraStage = true;
+                //パズルの遊んだ回数を1増やす
+                MyNCMBManager.AddPlayerNum(initialize_value);
+            }
+        }
         canAcceptInput = false;//入力を受け付けなくする
         time = 0;//ゲーム内時間の初期化
         isClear = false;//クリアフラグの初期化
@@ -160,7 +198,18 @@ public class GameManager : MonoBehaviour
         isGoBackFlag = false;
 
         //ステージ作成
-        var tuple = _stageGenerator.CreateStageFromTilemap(stageTileMap);
+        (BlockEnum[,], GameObject[,]) tuple;
+        if (isCreateStage||isExtraStage)
+        {
+            //配列コピー
+            BlockEnum[,] blockEnums = new BlockEnum[initializeBlockEnums.GetLength(0), initializeBlockEnums.GetLength(1)];
+            Array.Copy(initializeBlockEnums, blockEnums,initializeBlockEnums.Length);
+            tuple = (blockEnums, _stageGenerator.CreateStage(blockEnums));
+        }
+        else
+        {
+            tuple = _stageGenerator.CreateStageFromTilemap(stageTileMap);
+        }
 
         //ブロックマネージャーの初期化
         _blockManager.Initialize(tuple.Item1, tuple.Item2);
@@ -176,10 +225,9 @@ public class GameManager : MonoBehaviour
         _submittedDeliveryBoxNum = 0;
 
         //カメラ設定
-        _cameraManager.Initialize(_player, new Vector2(tuple.Item1.GetLength(0), tuple.Item1.GetLength(1)));
-
+        _cameraManager.Initialize(_player, new Vector2(32,17));
         //ポーズ画面の初期化
-        _pauseManager.PauseInitialize();
+        _pauseManager.PauseInitialize(isExtraStage,isCreateStage);
         IsPause = false;
     }
 
@@ -206,11 +254,14 @@ public class GameManager : MonoBehaviour
         Restart();
         yield return SceneChangeManager.instance.StartCoroutine(SceneChangeManager.OpenCurtainCoroutine());
         canAcceptInput = true;
+        SoundManager.PlaySE(SE_Enum.HUE);
     }
 
     //死亡アニメーションの一連の流れ
     private IEnumerator DieAnimationCoroutine(DamageBox explosionObj)
     {
+        SoundManager.PlaySE(SE_Enum.EXPLOSION);
+        SoundManager.PlaySE(SE_Enum.DAMAGE);
         Destroy(explosionObj.gameObject);
         //プレイヤーのダメージアニメーション
         if (_player.transform.position.x < explosionObj.transform.position.x)
@@ -252,6 +303,11 @@ public class GameManager : MonoBehaviour
         _submitString.transform.localPosition = pos;
 
         //糸を下に垂らす
+        if (!object.Equals(stringTweener,null))
+        {
+            stringTweener.Kill();
+        }
+        stringTweener=
         _submitString.transform.DOLocalMove(new Vector3(pos.x-0.02f, _goal.transform.localPosition.y + 8.75f, 0),0.5f)
         .SetDelay(0.5f).SetEase(Ease.OutSine).OnComplete(instance.HangDeliverWithString).SetLink(_submitString.gameObject);
 
@@ -267,6 +323,7 @@ public class GameManager : MonoBehaviour
     //糸を下まで伸ばし切った後の処理
     private void HangDeliverWithString()
     {
+        SoundManager.PlaySE(SE_Enum.SUBMIT);
         //ゴールの配達バコを非表示
         _goal.GetDeliverBoxSprite().SetActive(false);
         //糸の先の配達バコを表示
@@ -282,14 +339,17 @@ public class GameManager : MonoBehaviour
         if (isClear)
         {
             _player.transform.parent = _submitString.transform;
-            _player.transform.localPosition = new Vector3(0.48f * _player.IsLeftThen1(), -6.0f,0);
+            _player.transform.localPosition = new Vector3(0.48f * _player.IsLeftThen1(), -6.03f,0);
         }
         yield return new WaitForSeconds(0.2f);
 
-        Vector3 pos = _submitString.transform.localPosition;
-        //糸を上げる
-        _submitString.transform.DOLocalMove(new Vector3(pos.x, _cameraManager.transform.localPosition.y+19, 0),0.5f)
-        .SetEase(Ease.OutSine).OnComplete(instance.DissapearString).SetLink(_submitString.gameObject);
+        if (object.Equals(stringTweener,null)||!stringTweener.IsActive()||!stringTweener.IsPlaying())
+        {
+            Vector3 pos = _submitString.transform.localPosition;
+            //糸を上げる
+            _submitString.transform.DOLocalMove(new Vector3(pos.x, _cameraManager.transform.localPosition.y + 19, 0), 0.5f)
+            .SetEase(Ease.OutSine).OnComplete(instance.DissapearString).SetLink(_submitString.gameObject);
+        }
     }
 
     //糸を上に上げ切った後の処理
@@ -301,6 +361,10 @@ public class GameManager : MonoBehaviour
     //ゲームクリア時の処理の一連の流れ
     private IEnumerator ClearDealCoroutine()
     {
+        SoundManager.StopBGM();
+
+        SoundManager.PlaySE(SE_Enum.CLEAR);
+
         //プレイヤーにクリアモーションを開始させる
         _player.ClearDeal(_goal.transform.localPosition,_submitString.gameObject);
         //カメラのクリアモーションを開始させる(ズーム)
@@ -326,11 +390,12 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.9f);
         //クリア時間の表示
         ShowTime();
-        yield return new WaitForSeconds(0.1f);
+        SoundManager.PlaySE(SE_Enum.PA);
         //「New!」の文字を表示させるべきなら表示させる
         ShowNew();
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.4f);
         //「スペースキーで戻る」を表示
+        SoundManager.PlaySE(SE_Enum.PA);
         PressSpace.SetActive(true);
         isGoBackFlag = true;
     }
@@ -370,6 +435,7 @@ public class GameManager : MonoBehaviour
     private void ShowNew()
     {
         //クリア時間が従来の物より早ければ「New!」の文字を表示する
+        if (isCreateStage) return;
         if (time < SaveData.GetStageDataFromStagename(StageSceneName)
             || SaveData.GetStageDataFromStagename(StageSceneName) == -1)
         {
@@ -380,6 +446,6 @@ public class GameManager : MonoBehaviour
     //終了後の処理
     public void Terminate()
     {
-
+        initializeBlockEnums = null;
     }
 }

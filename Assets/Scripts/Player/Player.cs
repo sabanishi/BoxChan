@@ -110,6 +110,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetButtonDown("Jump"))
             {
+                SoundManager.PlaySE(SE_Enum.JUMP);
                 speedVector = new Vector3(speedVector.x, jumpSpeed, 0);
             }
         }
@@ -133,6 +134,7 @@ public class Player : MonoBehaviour
             {
                 if (Input.GetButtonDown("Hang"))
                 {
+                    SoundManager.PlaySE(SE_Enum.GRAB);
                     BlockManager.PutBox(this, isRight);
                 }
             }
@@ -146,6 +148,7 @@ public class Player : MonoBehaviour
             //ハコを持ち上げる
             if (box!=null&&Input.GetButtonDown("Hang"))
             {
+                SoundManager.PlaySE(SE_Enum.GRAB2);
                 BlockManager.GrabBox(this, box);
             }
         }
@@ -229,6 +232,7 @@ public class Player : MonoBehaviour
     //ジャンプ台に乗った時のジャンプ
     public void HighJump()
     {
+        SoundManager.PlaySE(SE_Enum.HIGHJUMP);
         rb.velocity = new Vector3(rb.velocity.x, highJumpSpeed, 0);
     }
 
@@ -240,7 +244,7 @@ public class Player : MonoBehaviour
         SetVelocity(new Vector2(0, 0));
         GetComponent<CapsuleCollider2D>().enabled = false;
         rb.simulated = false;
-
+        SoundManager.PlaySE(SE_Enum.WARP);
         canOperate = false;
         _transform.DOLocalMove(fromBox.transform.localPosition, 0.4f).SetLink(gameObject).OnComplete(
             () =>
@@ -279,7 +283,7 @@ public class Player : MonoBehaviour
             () =>
             {
                 _sprite.sprite = JumpSprite2;
-                _transform.DOLocalMove(new Vector3(goalPos.x + 0.24f*isLeftThen1, goalPos.y + 0.92f, 0), 0.2f).SetLink(gameObject).OnComplete(
+                _transform.DOLocalMove(new Vector3(goalPos.x + 0.24f*isLeftThen1, goalPos.y + 0.9f, 0), 0.2f).SetLink(gameObject).OnComplete(
                     () =>
                     {
                         _sprite.sprite = WaitSprite;

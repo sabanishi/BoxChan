@@ -37,6 +37,8 @@ public class SoundManager : MonoBehaviour
     //再生を予約できる最大数
     private int maxQuendItemCount = 8;
 
+    private Coroutine fadeOut;
+
     public void SetAudioClips(AudioClip[] ses, AudioClip[] intros, AudioClip[] loops)
     {
         SE_Clips = ses;
@@ -58,6 +60,9 @@ public class SoundManager : MonoBehaviour
 
         IntroBGM_Source = gameObject.AddComponent<AudioSource>();
         LoopBGM_Source = gameObject.AddComponent<AudioSource>();
+        //BGMの優先順位をあげる
+        IntroBGM_Source.priority = 0;
+        LoopBGM_Source.priority = 0;
         IntroBGM_Source.loop = false;
         LoopBGM_Source.loop = true;
 
@@ -147,6 +152,16 @@ public class SoundManager : MonoBehaviour
 
     private void InstancePlayBGM(BGM_Enum bgmType)
     {
+        if (fadeOut != null)
+        {
+            StopCoroutine(fadeOut);
+            fadeOut = null;
+            IntroBGM_Source.Stop();
+            IntroBGM_Source.clip = null;
+            LoopBGM_Source.Stop();
+            LoopBGM_Source.clip = null;
+        }
+
         CurrentBGMEnum = bgmType;
         AudioClip intro;
         if (bgmIntroDictionary.TryGetValue(bgmType, out intro))
@@ -182,8 +197,26 @@ public class SoundManager : MonoBehaviour
 
     private void InstanceStopBGM()
     {
-        IntroBGM_Source.Stop();
-        IntroBGM_Source.clip = null;
+        fadeOut = StartCoroutine(BGMFadeOut());
+    }
+
+    private IEnumerator BGMFadeOut()
+    {
+        if (IntroBGM_Source.clip != null)
+        {
+            while (IntroBGM_Source.volume > 0)
+            {
+                IntroBGM_Source.volume -= 0.02f;
+                yield return new WaitForSeconds(0.05f);
+            }
+            IntroBGM_Source.Stop();
+            IntroBGM_Source.clip = null;
+        }
+        while (LoopBGM_Source.volume > 0)
+        {
+            LoopBGM_Source.volume -= 0.02f;
+            yield return new WaitForSeconds(0.05f);
+        }
         LoopBGM_Source.Stop();
         LoopBGM_Source.clip = null;
     }

@@ -15,7 +15,7 @@ public class SaveData : MonoBehaviour
         "Stage9","Stage10","Stage11","Stage12","Stage13","Stage14","Stage15","Stage16",
     };
 
-    public static readonly int FINAL_STAGE_NUM=16;//ステージ数
+    public static readonly int FINAL_STAGE_NUM=7;//ステージ数
 
     private void Start()
     {

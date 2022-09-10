@@ -13,7 +13,7 @@ public class BoarderColliderObjects : MonoBehaviour
     public void SetBorderLine(float width,float height)
     {
         up.size = new Vector2(width, 1);
-        up.offset = new Vector2(width / 2 - 0.5f, height);
+        up.offset = new Vector2(width / 2-0.5f, height+1);
 
         down.size = new Vector2(width, 1);
         down.offset = new Vector2(width / 2 - 0.5f,-5);

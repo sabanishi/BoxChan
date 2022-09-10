@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 public class StageGenerator : MonoBehaviour
 {
     public static StageGenerator instance;
-    private Transform _transform;
+    [SerializeField]private Transform _transform;
 
     [SerializeField]private string NotBoxName = "notBox";
     [SerializeField]private Block NotBoxBlockPrefab;
@@ -45,7 +45,6 @@ public class StageGenerator : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            _transform = transform;
         }
         else
         {
@@ -68,8 +67,6 @@ public class StageGenerator : MonoBehaviour
     //GameManagerから呼び出され、TileMapを基にステージを作成し、二次元配列を返す
     public (BlockEnum[,],GameObject[,]) CreateStageFromTilemap(Tilemap _tileMap)
     {
-        _transform = transform;
-
         BlockEnum[,] blockEnums = GenerateStage(_tileMap);
 
         GameObject[,] blockObjects = CreateStage(blockEnums);

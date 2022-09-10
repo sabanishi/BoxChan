@@ -8,7 +8,7 @@ public class StageSquareNode : MonoBehaviour
     [SerializeField] private Sprite normallySprite;
     [SerializeField] private Sprite isCursleSprite;
     [SerializeField] private int StageNumber;
-    [SerializeField] private StageSelectManager parent;
+    [SerializeField] private StageSelectChild parent;
     [SerializeField] private PolygonCollider2D pCollider;
 
     private bool isEnter;
@@ -81,5 +81,6 @@ public class StageSquareNode : MonoBehaviour
         parent.ClickNumber(StageNumber);
         squareSprite.sprite = normallySprite;
         _transform.localScale = new Vector3(1, 1, 1);
+        SoundManager.PlaySE(SE_Enum.DECIDE1);
     }
 }

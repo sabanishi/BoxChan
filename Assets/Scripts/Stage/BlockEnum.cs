@@ -13,4 +13,5 @@ public enum BlockEnum
     WarpBox2 = 9,
     WarpBox3 = 10,
     WarpBox4 = 11,
+    Eraser=12,
 }

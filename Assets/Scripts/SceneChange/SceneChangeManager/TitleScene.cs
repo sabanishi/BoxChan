@@ -11,10 +11,9 @@ public class TitleScene : SceneChangeAbstract
 
     private void Update()
     {
-
-
         if (isAction && Input.GetMouseButtonDown(0))
         {
+            SoundManager.PlaySE(SE_Enum.DECIDE1);
             SceneChangeManager.GoSelect(SceneEnum.Title);
         }
     }

@@ -10,6 +10,8 @@ public class CurtainManager : MonoBehaviour
     public IEnumerator AppearLetterCoroutine()
     {
         yield return new WaitForSeconds(0.3f);
+
+        SoundManager.PlaySE(SE_Enum.SCENECHANGE1);
         Curtain.transform.localPosition = new Vector3(0,-22, 0);
         Curtain.transform.DOLocalMove(new Vector3(0,6, 0),0.5f).SetEase(Ease.InSine).SetLink(Curtain);
         yield return new WaitForSeconds(0.6f);
