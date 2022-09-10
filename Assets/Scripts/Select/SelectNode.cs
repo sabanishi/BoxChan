@@ -8,7 +8,7 @@ public class SelectNode : MonoBehaviour
     [SerializeField] private Vector3 inCursleSize;
     [SerializeField] private Sprite normallySprite;
     [SerializeField] private Sprite inCursleSprite;
-    [SerializeField] private AbstractManager parent;
+    [SerializeField] private AbstractChild parent;
     [SerializeField] private string nodeName;
     [SerializeField] private SpriteRenderer sprite;
 
@@ -52,40 +52,33 @@ public class SelectNode : MonoBehaviour
 
     public void OnMouseEnter()
     {
-        if (!isValid)
+        if (!isValid|| !parent.parent.IsValid)
         {
             isEnter = true;
         }
         else
         {
-            if (parent.parent.IsValid)
-            {
-                _transform.localScale = inCursleSize;
-                sprite.sprite = inCursleSprite;
-            }
+            _transform.localScale = inCursleSize;
+            sprite.sprite = inCursleSprite;
         }
-       
     }
 
     public void OnMouseExit()
     {
-        if (!isValid)
+
+        if (parent.parent.IsValid)
         {
-            isEnter = false;
+            _transform.localScale = normallySize;
+            sprite.sprite = normallySprite;
         }
-        else
-        {
-            if (parent.parent.IsValid)
-            {
-                _transform.localScale = normallySize;
-                sprite.sprite = normallySprite;
-            }
-        }
+        isEnter = false;
     }
+    
 
     public void OnMouseClick()
     {
         if (!isValid || !parent.parent.IsValid) return;
         parent.ClickDeal(nodeName);
+        SoundManager.PlaySE(SE_Enum.DECIDE2);
     }
 }

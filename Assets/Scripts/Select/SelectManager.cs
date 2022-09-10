@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SelectManager : MonoBehaviour
 {
-    [SerializeField] private LobbyManager lobby;
-    [SerializeField] private StageSelectManager stageSelect;
-    [SerializeField] private ExtraStageSelectManager extraStageSelect;
+    [SerializeField] private LobbyChild lobby;
+    [SerializeField] private StageSelectChild stageSelect;
+    [SerializeField] private ExtraStageSelectChild extraStageSelect;
     [SerializeField] private GameObject stageNumbers;
     [SerializeField] private StageSquareNode[] stageSquares;
     private bool isValid;
@@ -40,6 +40,10 @@ public class SelectManager : MonoBehaviour
         {
             //fromゲーム
             SetState(SelectEnum.None, SelectEnum.StageSelect);
+        }else if (initialize_value.Equals("CreateStage")||initialize_value.Equals("ExtraStageSelect"))
+        {
+            //fromステージ制作
+            SetState(SelectEnum.None, SelectEnum.ExtraStageSelect);
         }
         SetCanPlayStage();
     }
@@ -71,6 +75,10 @@ public class SelectManager : MonoBehaviour
             {
                 //ゲーム画面からStageSelectへ
                 stageSelect.Initialize_FromGame();
+            }else if (to.Equals(SelectEnum.ExtraStageSelect))
+            {
+                //ステージ制作画面からExtraStageelectへ
+                extraStageSelect.Initialize_FromCreateStage();
             }
         }
         else if (from.Equals(SelectEnum.Lobby))

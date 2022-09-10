@@ -28,6 +28,7 @@ public class WarpBox : Box
         set
         {
             canWarp = value;
+            if (!canWarp) isTouch = false;
             SetSprite();
         }
     }
@@ -57,6 +58,26 @@ public class WarpBox : Box
 
     private void SetSprite()
     {
+        if (!canWarp)
+        {
+            switch (myBlockEnum)
+            {
+                case BlockEnum.WarpBox1:
+                    sprite.sprite = spriteNot1;
+                    break;
+                case BlockEnum.WarpBox2:
+                    sprite.sprite = spriteNot2;
+                    break;
+                case BlockEnum.WarpBox3:
+                    sprite.sprite = spriteNot3;
+                    break;
+                case BlockEnum.WarpBox4:
+                    sprite.sprite = spriteNot4;
+                    break;
+            }
+            return;
+        }
+
         if (isTouch)
         {
             switch (myBlockEnum)
@@ -76,41 +97,21 @@ public class WarpBox : Box
             }
             return;
         }
-        if (canWarp)
+
+        switch (myBlockEnum)
         {
-            switch (myBlockEnum)
-            {
-                case BlockEnum.WarpBox1:
-                    sprite.sprite = sprite1;
-                    break;
-                case BlockEnum.WarpBox2:
-                    sprite.sprite = sprite2;
-                    break;
-                case BlockEnum.WarpBox3:
-                    sprite.sprite = sprite3;
-                    break;
-                case BlockEnum.WarpBox4:
-                    sprite.sprite = sprite4;
-                    break;
-            }
-        }
-        else
-        {
-            switch (myBlockEnum)
-            {
-                case BlockEnum.WarpBox1:
-                    sprite.sprite = spriteNot1;
-                    break;
-                case BlockEnum.WarpBox2:
-                    sprite.sprite = spriteNot2;
-                    break;
-                case BlockEnum.WarpBox3:
-                    sprite.sprite = spriteNot3;
-                    break;
-                case BlockEnum.WarpBox4:
-                    sprite.sprite = spriteNot4;
-                    break;
-            }
+            case BlockEnum.WarpBox1:
+                sprite.sprite = sprite1;
+                break;
+            case BlockEnum.WarpBox2:
+                sprite.sprite = sprite2;
+                break;
+            case BlockEnum.WarpBox3:
+                sprite.sprite = sprite3;
+                break;
+            case BlockEnum.WarpBox4:
+                sprite.sprite = sprite4;
+                break;
         }
     }
 

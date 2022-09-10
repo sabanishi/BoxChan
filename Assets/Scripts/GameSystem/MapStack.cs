@@ -9,8 +9,19 @@ public class MapStack : MonoBehaviour
 
     public Tilemap GetTileMap(string stageName)
     {
+        if (stageName.Length <= 4)
+        {
+            return null;
+        }
         string numStr = stageName.Substring(5);
-        int num = int.Parse(numStr);
-        return tileMaps[num-1];
+        int num = -1;
+        if (int.TryParse(numStr, out num))
+        {
+            return tileMaps[num - 1];
+        }
+        else
+        {
+            return null;
+        }
     }
 }

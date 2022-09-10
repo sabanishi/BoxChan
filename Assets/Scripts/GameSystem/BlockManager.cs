@@ -244,7 +244,7 @@ public class BlockManager : MonoBehaviour
         //上のブロックを落下させる
         bool isFinishDeal = true;//落下後の処理をするかどうか
         y++;
-        while(instance.stageBlockEnums[x, y] != BlockEnum.None&&instance.stageBlockEnums[x,y]!=BlockEnum.NotBox)
+        while(y<instance.stageBlockEnums.GetLength(1)&&instance.stageBlockEnums[x, y] != BlockEnum.None&&instance.stageBlockEnums[x,y]!=BlockEnum.NotBox)
         {
             instance.stageBlockEnums[x, y - 1] = instance.stageBlockEnums[x, y];
             instance.stageBlockEnums[x, y] = BlockEnum.None;

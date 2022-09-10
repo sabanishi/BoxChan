@@ -19,8 +19,11 @@ public class PauseManager : MonoBehaviour
     private bool isPausePrepare;//ポーズ準備・片付けも含めて管理するフラグ
     private int pauseStateNum;//ポーズの状態を管理する変数
 
+    private bool isExtraStage;
+    private bool isCreateStage;
+
     //ポーズ画面の初期化
-    public void PauseInitialize()
+    public void PauseInitialize(bool _isExtragStage,bool _isCreateStage)
     {
         PauseObj.transform.localPosition = new Vector3(-1200,330,0);
         GoOnObj.transform.localPosition = new Vector3(1200,0,0);
@@ -28,6 +31,8 @@ public class PauseManager : MonoBehaviour
         GoBackObj.transform.localPosition = new Vector3(1200,-300,0);
         ExplainObj.transform.localPosition = new Vector3(-1200,0,0);
         BlackBack.SetActive(false);
+        isExtraStage = _isExtragStage;
+        isCreateStage = _isCreateStage;
     }
 
     //ポーズ画面が始める際の一連の流れ
@@ -107,6 +112,7 @@ public class PauseManager : MonoBehaviour
                 {
                     pauseStateNum = 3;
                 }
+                SoundManager.PlaySE(SE_Enum.DECIDE3);
             }else
             if (Input.GetButtonDown("Down"))
             {
@@ -116,6 +122,7 @@ public class PauseManager : MonoBehaviour
                 {
                     pauseStateNum = 1;
                 }
+                SoundManager.PlaySE(SE_Enum.DECIDE3);
             }
 
         }
@@ -124,6 +131,7 @@ public class PauseManager : MonoBehaviour
     //続ける
     private void GoOnDeal()
     {
+        SoundManager.PlaySE(SE_Enum.MENU);
         StartCoroutine(GoOnDealCoroutine());
     }
 
@@ -145,6 +153,7 @@ public class PauseManager : MonoBehaviour
     //最初から
     private void RestartDeal()
     {
+        SoundManager.PlaySE(SE_Enum.DECIDE2);
         isPausePrepare = true;
         GameManager.instance.StartCoroutine(GameManager.instance.RestartCoroutine());
     }
@@ -152,8 +161,19 @@ public class PauseManager : MonoBehaviour
     //セレクト画面へ
     private void GoBackDeal()
     {
+        SoundManager.PlaySE(SE_Enum.DECIDE1);
         isPausePrepare = true;
-        SceneChangeManager.GoSelect(SceneEnum.Game);
+        if (isExtraStage)
+        {
+            SceneChangeManager.GoExtraStageSelect(SceneEnum.Game);
+        }else if (isCreateStage)
+        {
+            SceneChangeManager.GoCreateStage(SceneEnum.Game, false);
+        }
+        else
+        {
+            SceneChangeManager.GoSelect(SceneEnum.Game);
+        }
     }
 
     //テキストの色を決める
@@ -199,7 +219,7 @@ public class PauseManager : MonoBehaviour
         Hashtable PausemoveHash = new Hashtable();
         if (i != 3)
         {
-            PausemoveHash.Add("position", MainCameraTF.position + new Vector3(500, -i * 150, 0));
+            PausemoveHash.Add("position", MainCameraTF.position + new Vector3(450, -i * 150, 0));
         }
         else
         {
