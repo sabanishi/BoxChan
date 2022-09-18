@@ -83,7 +83,7 @@ public class StageGenerator : MonoBehaviour
         BoundsInt bounds = _tileMap.cellBounds;
         TileBase[] allBlocks = _tileMap.GetTilesBlock(bounds);
         
-        blockEnums = new BlockEnum[bounds.size.x, bounds.size.y];
+        blockEnums = new BlockEnum[32,18];
         for (int x = 0; x < bounds.size.x; x++)
         {
             for (int y = 0; y < bounds.size.y; y++)

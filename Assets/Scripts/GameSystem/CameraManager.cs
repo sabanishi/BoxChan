@@ -7,18 +7,17 @@ public class CameraManager : MonoBehaviour
     [SerializeField] public CinemachineVirtualCamera _Camera;
     [SerializeField] private CinemachineConfiner _CameraConfiner;//カメラの移動制限区域
     [SerializeField] private float cameraDepth;//カメラの深さ(どれくらいズームするか)
+    [SerializeField] private float chutorialCameraDepth;//チュートリアルでのカメラの深さ
     [SerializeField] private PolygonCollider2D colliderPrefab;//カメラの移動を制限するためのcollider
     [SerializeField] private BoarderColliderObjects boaderColliers;//画面端からプレイヤーが落ちないようにするためのcollider
     [SerializeField] [Header("クリア時の深度")] private float clearOrthgraphSize = 2.5f;//クリア時のカメラの深さ
 
     private float clearCount;//クリア時の演出に使うカウンター
+    private bool isChutorial;
 
-    public void Initialize(Player player,Vector2 screenSize)
+    public void Initialize(Player player,Vector2 screenSize,bool _isChutorial)
     {
-        //追従する対象の設定
-        _Camera.Follow = player.transform;
-        //カメラ深度の設定
-        _Camera.m_Lens.OrthographicSize = cameraDepth;
+        isChutorial = _isChutorial;
 
         //カメラの移動制限区域の設定
         PolygonCollider2D limit = colliderPrefab;
@@ -32,6 +31,19 @@ public class CameraManager : MonoBehaviour
         limit.SetPath(0, path);
         SetLimit(limit);
 
+        //追従する対象の設定
+        _Camera.Follow = player.transform;
+        _Camera.transform.position = player.transform.position;
+        //カメラ深度の設定
+        if (isChutorial)
+        {
+            _Camera.m_Lens.OrthographicSize = chutorialCameraDepth;
+        }
+        else
+        {
+            _Camera.m_Lens.OrthographicSize = cameraDepth;
+        }
+
         //画面端からプレイヤーがおちないようにするためのcolliderの作成
         boaderColliers.SetBorderLine(screenSize.x, screenSize.y);
     }
@@ -44,7 +56,14 @@ public class CameraManager : MonoBehaviour
             clearCount -= Time.deltaTime;
             if (clearCount > 0)
             {
-                _Camera.m_Lens.OrthographicSize = clearOrthgraphSize + (cameraDepth - clearOrthgraphSize) * clearCount;
+                if (isChutorial)
+                {
+                    _Camera.m_Lens.OrthographicSize = clearOrthgraphSize + (chutorialCameraDepth - clearOrthgraphSize) * clearCount;
+                }
+                else
+                {
+                    _Camera.m_Lens.OrthographicSize = clearOrthgraphSize + (cameraDepth - clearOrthgraphSize) * clearCount;
+                }
             }
         }
     }

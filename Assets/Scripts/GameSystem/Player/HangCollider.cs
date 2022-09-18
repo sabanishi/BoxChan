@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class HangCollider : MonoBehaviour
 {
-    [SerializeField] private GroundCheck groundCheck;
+    [SerializeField] private GroundCheck groundCheck1;
+    [SerializeField] private GroundCheck groundCheck2;
     [SerializeField] private Player player;
     public Box collisionBox { private set; get; }//触れているハコ
     public bool isHang { get; set; }//ハコを持っているかどうか
@@ -16,7 +17,7 @@ public class HangCollider : MonoBehaviour
         if (!isHang && collision.tag == "Box")
         {
             thisCollisionBox = collision.GetComponent<Box>();
-            if (groundCheck.IsGround())
+            if (groundCheck1.IsGround()&&groundCheck2.IsGround())
             {
                 EnterDeal();
             }
@@ -28,10 +29,15 @@ public class HangCollider : MonoBehaviour
         if (!player.CanOperate) return;
         if (!isHang && collision.tag == "Box")
         {
-            if (groundCheck.IsGround())
+            if (groundCheck1.IsGround()&&groundCheck2.IsGround())
             {
                 if (collisionBox == null)
                 {
+                    Box box = collision.GetComponent<Box>();
+                    if (box != thisCollisionBox)
+                    {
+                        thisCollisionBox = box;
+                    }
                     EnterDeal();
                 }
             }

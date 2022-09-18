@@ -6,11 +6,27 @@ using DG.Tweening;
 public class TitleScene : SceneChangeAbstract
 {
     [SerializeField] private GameObject ClickStartText;
+    [SerializeField] private SpriteRenderer sprite;
     private bool isAction;
     private Sequence sequence;
+    private bool isStarting;
+    private float startCounter = 1;
 
     private void Update()
     {
+        if (!isStarting)
+        {
+            sprite.color = new Color(1, 1, 1, startCounter);
+            startCounter -= Time.deltaTime;
+            if (startCounter <= 0)
+            {
+                isStarting = true;
+            }
+            if (startCounter >= 0.4f)
+            {
+                return;
+            }
+        }
         if (isAction && Input.GetMouseButtonDown(0))
         {
             SoundManager.PlaySE(SE_Enum.DECIDE1);

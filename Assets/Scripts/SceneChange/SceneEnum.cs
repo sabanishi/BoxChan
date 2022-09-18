@@ -4,5 +4,5 @@ using UnityEngine;
 
 public enum SceneEnum
 {
-    None,Title,Select,Game,CreateStage,ExtraStageSelect
+    None,Title,Select,Game,CreateStage,ExtraStageSelect,Credit
 }

@@ -46,6 +46,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Board
+    uniqueID: 2399182961
+    locked: 0
   - name: WarpPlayer
     uniqueID: 2076314437
     locked: 0
