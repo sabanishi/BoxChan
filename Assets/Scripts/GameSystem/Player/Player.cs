@@ -11,7 +11,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float highJumpSpeed;//ジャンプ台に乗った時のジャンプ高度
     [SerializeField] private Animator _animator;
     [SerializeField] private Transform _transform;
-    [SerializeField] private GroundCheck _groundCheck;//接地判定
+    [SerializeField] private GroundCheck _groundCheck;
+    [SerializeField] private GroundCheck _groundCheckForBox1;//接地判定
+    [SerializeField] private GroundCheck _groundCheckForBox2;
     [SerializeField] private HangCollider _hangCollider;//自身の目の前のBoxを調べる
     [SerializeField] private SpriteRenderer _hangBoxSprite;//持っているハコの画像
     [SerializeField] private SpriteRenderer _sprite;//Spriterenderer
@@ -130,7 +132,7 @@ public class Player : MonoBehaviour
                 isRight = true;
             }
             //ハコを置く
-            if (_groundCheck.IsGround() && BlockManager.CanPutBox(_transform.localPosition,isRight))
+            if (_groundCheckForBox1.IsGround()&&_groundCheckForBox2.IsGround() && BlockManager.CanPutBox(_transform.localPosition,isRight))
             {
                 if (Input.GetButtonDown("Hang"))
                 {
@@ -177,13 +179,13 @@ public class Player : MonoBehaviour
 
         _animator.SetBool("IsBox", isHang);
         _animator.SetFloat("ySpeed", rb.velocity.y);
-        _animator.SetBool("IsAir", !_groundCheck.IsGround());
+        _animator.SetBool("IsAir", !(_groundCheck.IsGround()));
     }
 
     //Yスピードの処理(なんか引っ掛かったら上に余計にジャンプしないようにする処理)
     private void YSpeedDeal()
     {
-        if (!_groundCheck.IsGround())
+        if (!(_groundCheck.IsGround()))
         {
             if (rb.velocity.y != jumpSpeed)
             {

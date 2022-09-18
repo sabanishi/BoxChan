@@ -81,31 +81,11 @@ public class BlockManager : MonoBehaviour
             return false;
         }
 
-        //向いている方向に応じて位置に補正をかける
-        Vector3 pos = playerPos;
-        if (isRight)
-        {
-            pos += new Vector3(0.1f, 0, 0);
-        }
-        else
-        {
-            pos -= new Vector3(0.1f, 0, 0);
-        }
-
         //該当箇所の特定
-        int x = (int)Math.Round(pos.x, MidpointRounding.AwayFromZero);
-        int y = (int)Math.Round(pos.y, MidpointRounding.AwayFromZero);
+        int x = (int)Math.Round(playerPos.x, MidpointRounding.AwayFromZero);
+        int y = (int)Math.Round(playerPos.y, MidpointRounding.AwayFromZero);
         if (isRight) { x++; }
         else { x--; }
-
-        //右向いていて、右半分にいない時、
-        //または左向いていて、左半分にいない時、falseを返す
-        if ((isRight && pos.x % 1 > 0.5f)||(!isRight&&pos.x%1 < 0.5f))
-        {
-            //目印の三角形を非表示にする
-            DissapearMarks();
-            return false;
-        }
 
         //画面外の時、falseを返す
         if (x < 0 || x >= instance.stageBlockEnums.GetLength(0)||
@@ -157,19 +137,10 @@ public class BlockManager : MonoBehaviour
     public static void PutBox(Player player,bool isRight)
     {
         Vector3 playerPos = player.transform.position;
-        //向いている方向に応じて位置に補正をかける
-        Vector3 pos = playerPos;
-        if (isRight)
-        {
-            pos += new Vector3(0.1f, 0, 0);
-        }
-        else
-        {
-            pos -= new Vector3(0.1f, 0, 0);
-        }
+
         //該当箇所の特定
-        int x = (int)Math.Round(pos.x, MidpointRounding.AwayFromZero);
-        int y = (int)Math.Round(pos.y, MidpointRounding.AwayFromZero);
+        int x = (int)Math.Round(playerPos.x, MidpointRounding.AwayFromZero);
+        int y = (int)Math.Round(playerPos.y, MidpointRounding.AwayFromZero);
         if (isRight){ x++;}
         else{ x--;}
 
@@ -333,7 +304,6 @@ public class BlockManager : MonoBehaviour
             }
         }
     }
-
 
     //ワープバコを配列に追加する
     private void AddWarpBox(Box box)

@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private SubmitString _submitString;//配達バコを提出した時の演出用のひも
     [SerializeField] private GameObject ExplsionPrefab;//危険なハコが爆発した時の演出用プレハブ
     [SerializeField] private MapStack mapStack;//全てのステージTilemapのリストを持っているオブジェクト
+    [SerializeField] private GameObject ChutorialStageBoard;//チュートリアルの看板達のプレハブ
 
     //クリア画面用
     [SerializeField] [Header("クリア時の文字")] private GameObject[] ClearCharacterPrefabs;//クリア時に出てくる文字
@@ -45,6 +46,7 @@ public class GameManager : MonoBehaviour
     private bool isExtraStage;//エクストラパズルの場合
     private BlockEnum[,] initializeBlockEnums;//タイルマップからステージを作らない場合、これからステージを作る
     private Tweener stringTweener;//配達バコを続けて配達した時、最初のアニメーションを停止するために必要
+    private bool isChutorial;//チュートリアルかどうか
 
     public bool CanAcceptInput
     {
@@ -147,6 +149,16 @@ public class GameManager : MonoBehaviour
     {
         isExtraStage = false;
         isCreateStage = false;
+        if (initialize_value.Equals("Stage1"))
+        {
+            isChutorial = true;
+            ChutorialStageBoard.SetActive(true);
+        }
+        else
+        {
+            isChutorial = false;
+            ChutorialStageBoard.SetActive(false);
+        }
         StageSceneName = initialize_value;//ステージ名の受け渡し
         stageTileMap = mapStack.GetTileMap(initialize_value);//ステージのタイルマップを決定、代入する
         //CreateStageSceneからきた場合
@@ -225,7 +237,7 @@ public class GameManager : MonoBehaviour
         _submittedDeliveryBoxNum = 0;
 
         //カメラ設定
-        _cameraManager.Initialize(_player, new Vector2(32,17));
+        _cameraManager.Initialize(_player, new Vector2(32,17),isChutorial);
         //ポーズ画面の初期化
         _pauseManager.PauseInitialize(isExtraStage,isCreateStage);
         IsPause = false;

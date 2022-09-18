@@ -11,6 +11,7 @@ public class SceneChangeManager : MonoBehaviour
     [SerializeField] private GameScene gameScene;
     [SerializeField] private CreateStageScene createStageScene;
     [SerializeField] private ExtraStageSelectScene extraStageSelectScene;
+    [SerializeField] private CreditScene creditScene;
 
     private bool isChangeing;
 
@@ -60,6 +61,10 @@ public class SceneChangeManager : MonoBehaviour
         else if (fromScene.Equals(SceneEnum.ExtraStageSelect))
         {
             instance.StartCoroutine(instance.GoStageCoroutine(instance.extraStageSelectScene, instance.seletScene, "ExtraStageSelect"));
+        }
+        else if (fromScene.Equals(SceneEnum.Credit))
+        {
+            instance.StartCoroutine(instance.GoStageCoroutine(instance.creditScene, instance.seletScene, "Title"));
         }
         else
         {
@@ -116,6 +121,11 @@ public class SceneChangeManager : MonoBehaviour
         {
             instance.StartCoroutine(instance.GoStageCoroutine(instance.gameScene, instance.extraStageSelectScene, "Game"));
         }
+    }
+
+    public static void GoCredit()
+    {
+        instance.StartCoroutine(instance.GoStageCoroutine(instance.seletScene, instance.creditScene, ""));
     }
 
     private IEnumerator GoStageCoroutine(SceneChangeAbstract from,SceneChangeAbstract to,string initialize_value)

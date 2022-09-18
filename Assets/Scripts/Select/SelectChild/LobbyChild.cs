@@ -9,6 +9,7 @@ public class LobbyChild : AbstractChild
     [SerializeField] private SelectNode extraStageSelectNode;
     [SerializeField] private SelectNode goTitleNode;
     [SerializeField] private GameObject boardNode;
+    [SerializeField] private SelectNode creditNode;
 
     public override void ClickDeal(string nodeName)
     {
@@ -29,6 +30,12 @@ public class LobbyChild : AbstractChild
             //エクストラステージ選択画面に切り替える
             parent.SetState(SelectEnum.Lobby, SelectEnum.ExtraStageSelect);
         }
+
+        if (nodeName == "CreditNode")
+        {
+            //クレジット画面に行く
+            SceneChangeManager.GoCredit();
+        }
     }
 
     public override void Reset()
@@ -37,6 +44,7 @@ public class LobbyChild : AbstractChild
         extraStageSelectNode.transform.localPosition = new Vector3(12.5f, 2.1f, 0);
         goTitleNode.transform.localPosition = new Vector3(11, -3.65f, 0);
         boardNode.transform.position = new Vector3(-4, 7, 0);
+        creditNode.transform.localPosition = new Vector3(11, -1.5f, 0);
     }
 
     //タイトル画面から遷移してくる時の処理
@@ -45,10 +53,12 @@ public class LobbyChild : AbstractChild
         stageSelectNode.Initialize();
         goTitleNode.Initialize();
         extraStageSelectNode.Initialize();
+        creditNode.Initialize();
         stageSelectNode.transform.localPosition = new Vector3(-3.22f, -0.99f, 0);
         extraStageSelectNode.transform.localPosition = new Vector3(4.75f, 2.1f, 0);
         goTitleNode.transform.localPosition = new Vector3(6.62f, -3.65f, 0);
         boardNode.transform.localPosition = new Vector3(-4, 4.3f, 0);
+        creditNode.transform.localPosition = new Vector3(6.62f, -1.5f, 0);
 
         parent.getStageNumbers().transform.parent = stageSelectNode.gameObject.transform;
         parent.getStageNumbers().transform.localPosition = new Vector3(-11.5f,2.05f, 0);
@@ -63,6 +73,7 @@ public class LobbyChild : AbstractChild
         stageSelectNode.gameObject.SetActive(false);
         SetMoveObj(goTitleNode, new Vector3(11, -3.65f, 0), 0,false);
         SetMoveObj(extraStageSelectNode, new Vector3(12.5f, 2.1f, 0), 0, false);
+        SetMoveObj(creditNode, new Vector3(11, -1.5f, 0), 0, false);
     }
 
     //ステージセレクト画面から遷移してくる時の処理
@@ -72,10 +83,12 @@ public class LobbyChild : AbstractChild
         stageSelectNode.Initialize();
         goTitleNode.Initialize();
         extraStageSelectNode.Initialize();
+        creditNode.Initialize();
         Reset();
         Invoke("AppearStageSelectNode", 0.5f);
         SetMoveObj(goTitleNode, new Vector3(6.62f, -3.65f, 0), 0.5f,true);
         SetMoveObj(extraStageSelectNode, new Vector3(4.75f, 2.1f, 0), 0.5f, true);
+        SetMoveObj(creditNode, new Vector3(6.62f, -1.5f, 0), 0.5f, true);
     }
 
     //エクストラステージセレクト画面へと遷移する時の処理
@@ -85,6 +98,7 @@ public class LobbyChild : AbstractChild
         extraStageSelectNode.gameObject.SetActive(false);
         SetMoveObj(goTitleNode, new Vector3(11, -3.65f, 0), 0, false);
         SetMoveObj(stageSelectNode, new Vector3(-12.5f, -0.99f, 0), 0, false);
+        SetMoveObj(creditNode, new Vector3(11, -1.5f, 0), 0, false);
     }
 
     //エクストラステージセレクト画面から遷移してくる時の処理
@@ -94,10 +108,12 @@ public class LobbyChild : AbstractChild
         stageSelectNode.Initialize();
         goTitleNode.Initialize();
         extraStageSelectNode.Initialize();
+        creditNode.Initialize();
         Reset();
         Invoke("AppearExtraStageSelectNode", 0.5f);
         SetMoveObj(goTitleNode, new Vector3(6.62f, -3.65f, 0), 0.5f, true);
         SetMoveObj(stageSelectNode, new Vector3(-3.22f, -0.99f, 0), 0.5f, true);
+        SetMoveObj(creditNode, new Vector3(6.62f, -1.5f, 0), 0.5f, false);
 
         parent.getStageNumbers().transform.parent = stageSelectNode.gameObject.transform;
         parent.getStageNumbers().transform.localPosition = new Vector3(-11.5f, 2.05f, 0);
@@ -130,5 +146,6 @@ public class LobbyChild : AbstractChild
         stageSelectNode.SetIsValidTrue();
         extraStageSelectNode.SetIsValidTrue();
         goTitleNode.SetIsValidTrue();
+        creditNode.SetIsValidTrue();
     }
 }
