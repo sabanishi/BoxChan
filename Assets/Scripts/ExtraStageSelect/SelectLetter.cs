@@ -113,7 +113,7 @@ public class SelectLetter : MonoBehaviour
     private void DisplayStageInfo()
     {
         nameText.text = dataNode.MapName;
-        float timeNum = SaveData.GetStageDataFromStagename(dataNode.ObjectID);
+        float timeNum = SaveData.GetStageDataFromStagename(dataNode.ID);
         
         if (timeNum == -1)
         {

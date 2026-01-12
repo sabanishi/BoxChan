@@ -233,14 +233,14 @@ public class CreateStageManager : MonoBehaviour
             }
         }
         //アップロードする
-        MyNCMBManager.PushMapInfo(name, mapData);
+        DatabaseConnector.PushMapInfo(name, mapData);
         //アップロードパネルを非表示にする
         uploadPanel.SetActive(false);
         uploadFinishPanel.SetActive(true);
         uploadButton.IsValid = false;
 
         //エクストラステージを読み込む
-        MyNCMBManager.FetchList();
+        DatabaseConnector.FetchList();
     }
 
     //パズル制作を続ける

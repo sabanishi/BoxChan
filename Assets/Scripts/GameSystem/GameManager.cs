@@ -175,7 +175,7 @@ public class GameManager : MonoBehaviour
                 initializeBlockEnums = InformationDeliveryUnit.Instance.BlockEnums;
                 isExtraStage = true;
                 //パズルの遊んだ回数を1増やす
-                MyNCMBManager.AddPlayerNum(initialize_value);
+                DatabaseConnector.AddPlayerNum(initialize_value);
             }
         }
         canAcceptInput = false;//入力を受け付けなくする

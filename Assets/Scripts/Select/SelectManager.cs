@@ -8,7 +8,6 @@ public class SelectManager : MonoBehaviour
     [SerializeField] private StageSelectChild stageSelect;
     [SerializeField] private ExtraStageSelectChild extraStageSelect;
     [SerializeField] private GameObject stageNumbers;
-    [SerializeField] private StageSquareNode[] stageSquares;
     private bool isValid;
     public bool IsValid
     {
@@ -45,7 +44,6 @@ public class SelectManager : MonoBehaviour
             //fromステージ制作
             SetState(SelectEnum.None, SelectEnum.ExtraStageSelect);
         }
-        SetCanPlayStage();
     }
 
     //暗転解除後の処理
@@ -113,34 +111,6 @@ public class SelectManager : MonoBehaviour
                 //extraSelectからlobbyへ
                 extraStageSelect.Finish_ToLobby();
                 lobby.Initialize_FromExtraStageSelect();
-            }
-        }
-    }
-
-    //遊べるステージの決定
-    private void SetCanPlayStage()
-    {
-        for(int i = 0; i < stageSquares.Length; i++)
-        {
-            stageSquares[i].gameObject.SetActive(false);
-        }
-        for(int stageNum=1;stageNum<= SaveData.FINAL_STAGE_NUM;stageNum++)
-        {
-            if (SaveData.GetStageDataFromStagename(SaveData.STAGE_NAME_FOR_NORMAL_PUZZLE[stageNum]) != -1)
-            {
-                //遊べる
-                stageSquares[stageNum - 1].gameObject.SetActive(true);
-                //最後まで調べたら終わる
-                if (stageNum == SaveData.FINAL_STAGE_NUM)
-                {
-                    break;
-                }
-            }
-            else
-            {
-                //このステージは遊べるが、それ以降は遊べない
-                stageSquares[stageNum - 1].gameObject.SetActive(true);
-                return;
             }
         }
     }

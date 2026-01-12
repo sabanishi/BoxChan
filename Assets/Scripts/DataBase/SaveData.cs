@@ -12,10 +12,10 @@ public class SaveData : MonoBehaviour
     public static readonly string[] STAGE_NAME_FOR_NORMAL_PUZZLE = new string[]
     {
         "","Stage1","Stage2","Stage3","Stage4","Stage5","Stage6","Stage7","Stage8",
-        "Stage9","Stage10","Stage11","Stage12","Stage13","Stage14","Stage15","Stage16",
+        "Stage9","Stage10","Stage11","Stage12"
     };
 
-    public static readonly int FINAL_STAGE_NUM=12;//ステージ数
+    public static readonly int FINAL_STAGE_NUM=16;//ステージ数
 
     private void Start()
     {

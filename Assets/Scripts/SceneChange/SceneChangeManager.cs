@@ -133,9 +133,9 @@ public class SceneChangeManager : MonoBehaviour
         isChangeing = true;
 
         //エクストラステージセレクトに入り、かつまだエクストラステージのデータを一度も読み込んでいない時、読み込みを開始する
-        if (to.Equals(instance.extraStageSelectScene)&&!MyNCMBManager.instance.IsAlreadyLoad)
+        if (to.Equals(instance.extraStageSelectScene)&&!DatabaseConnector.Instance.IsAlreadyLoad)
         {
-            MyNCMBManager.FetchList();
+            DatabaseConnector.FetchList();
         }
 
         //入力受け付け停止

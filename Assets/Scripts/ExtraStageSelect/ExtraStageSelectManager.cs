@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using NCMB;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
@@ -111,17 +109,20 @@ public class ExtraStageSelectManager : MonoBehaviour
     //ステージの情報を読み込む
     private IEnumerator LoadStageData()
     {
-        while (!MyNCMBManager.instance.isLoadFinish)
+        while (!DatabaseConnector.Instance.IsLoadFinish)
         {
             yield return null;
         }
 
         stageNodes.Clear();
 
-        List<NCMBObject> mapDatas = MyNCMBManager.instance.GetLoadObjs();
-        foreach(NCMBObject ncmbObject in mapDatas)
+        List<ExtraMapData> mapDataList = DatabaseConnector.Instance.GetLoadObjs();
+        if (mapDataList != null && mapDataList.Count > 0)
         {
-            stageNodes.Add(new ExtraStageDataNode(ncmbObject));
+            foreach (ExtraMapData data in mapDataList)
+            {
+                stageNodes.Add(new ExtraStageDataNode(data));
+            }
         }
         SortByDate();
         parent.IsLoadFinish = true;
@@ -271,15 +272,15 @@ public class ExtraStageSelectManager : MonoBehaviour
     //新着順で並べ替えるための補助関数
     private int SortByDateAuxiliary(ExtraStageDataNode a, ExtraStageDataNode b)
     {
-        if (a.CreateTime == null)
+        if (a.CreatedTime == null)
         {
             return 1;
         }
-        if (b.CreateTime == null)
+        if (b.CreatedTime == null)
         {
             return -1;
         }
-        return (b.CreateTime).CompareTo(a.CreateTime);
+        return (b.CreatedTime).CompareTo(a.CreatedTime);
     }
 
     //人気順で並べ替え
@@ -315,7 +316,7 @@ public class ExtraStageSelectManager : MonoBehaviour
     public void PlaySelectStage()
     {
         InformationDeliveryUnit.Instance.BlockEnums = selectLetterNode.Data.MapData;
-        SceneChangeManager.GoGameFromExtraStageSelect(selectLetterNode.Data.ObjectID);
+        SceneChangeManager.GoGameFromExtraStageSelect(selectLetterNode.Data.ID);
     }
 
     //選択を解除
